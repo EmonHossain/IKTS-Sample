@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using SampleApp.utils;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,9 +28,20 @@ namespace SampleApp
             InitializeComponent();
         }
 
-        private void ApplyButton_Click(object sender, RoutedEventArgs e)
+        //Open file button event
+        private void OpenButton_Click(object sender, RoutedEventArgs e)
         {
-            var a = description.Text;
+            //Read json file
+            string jsonObject = new ProfileIO().SelectFile().Read();
+
+            //Deserialize consumed string and convert it to a typed object
+            if(!string.IsNullOrEmpty(jsonObject) && !string.IsNullOrWhiteSpace(jsonObject)){
+                Profile profile = JsonConvert.DeserializeObject<Profile>(jsonObject);
+                Debug.WriteLine(profile.WorkCentres[0]);
+            }
+            
+            
+            Debug.WriteLine(jsonObject);
         }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
@@ -50,6 +64,23 @@ namespace SampleApp
             ComboBox cb = ((ComboBox)sender);
             ComboBoxItem cbi = (ComboBoxItem)cb.SelectedItem;
             this.lengthTextBox.Text = cbi.Content.ToString();
+        }
+
+        //Save file button event
+        private void SaveProfile_Click(object sender, RoutedEventArgs e)
+        {
+            //Construct profile object
+            Profile profile = new Profile();
+            profile.Supplier.Add("name", "Emon");
+            profile.Supplier.Add("Code" ,"007");
+            profile.WorkCentres.AddRange(new string[] { "A","B","C","D"});
+
+            //JSON stringify
+            string jsonObject = JsonConvert.SerializeObject(profile);
+            Debug.WriteLine(jsonObject);
+
+            //save json string to a selected directory
+            new ProfileIO().SaveFile().Write(jsonObject);
         }
     }
 }

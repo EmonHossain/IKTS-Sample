@@ -13,3 +13,6 @@ C:\Users\Hossa\source\repos\SampleApp\SampleApp\obj\Debug\SampleApp.csproj.Gener
 C:\Users\Hossa\source\repos\SampleApp\SampleApp\obj\Debug\SampleApp.csproj.CoreCompileInputs.cache
 C:\Users\Hossa\source\repos\SampleApp\SampleApp\obj\Debug\SampleApp.exe
 C:\Users\Hossa\source\repos\SampleApp\SampleApp\obj\Debug\SampleApp.pdb
+C:\Users\Hossa\source\repos\SampleApp\SampleApp\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Hossa\source\repos\SampleApp\SampleApp\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Hossa\source\repos\SampleApp\SampleApp\obj\Debug\SampleApp.csproj.CopyComplete
