@@ -31,21 +31,40 @@ namespace SampleApp
         //Open file button event
         private void OpenButton_Click(object sender, RoutedEventArgs e)
         {
+            /*
             //Read json file
-            string jsonObject = new ProfileIO().SelectFile().Read();
+            string jsonObject = "";// new ProfileIO().Read();
 
+            List<dynamic> objects = new ProfileIO().Read();
+            //List<dynamic> d = new List<dynamic>();
             //Deserialize consumed string and convert it to a typed object
-            if(!string.IsNullOrEmpty(jsonObject) && !string.IsNullOrWhiteSpace(jsonObject)){
+            if (!string.IsNullOrEmpty(jsonObject) && !string.IsNullOrWhiteSpace(jsonObject)){
                 Profile profile = JsonConvert.DeserializeObject<Profile>(jsonObject);
                 Debug.WriteLine(profile.WorkCentres[0]);
             }
             
             
             Debug.WriteLine(jsonObject);
+            */
+            ProfileWindow pw = new ProfileWindow();
+            pw.Show();
+
         }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
+            //ProfileWindow pw = new ProfileWindow();
+            //pw.Show();
+
+            //check file
+            if(new ProfileIO().IsProfileExist())
+            {
+                Debug.WriteLine("Profile Exists..!!!!!!");
+            }
+            else
+            {
+                Debug.WriteLine("Profile does not Exist..!!!!!!");
+            }
 
         }
 
@@ -69,18 +88,35 @@ namespace SampleApp
         //Save file button event
         private void SaveProfile_Click(object sender, RoutedEventArgs e)
         {
-            //Construct profile object
-            Profile profile = new Profile();
-            profile.Supplier.Add("name", "Emon");
-            profile.Supplier.Add("Code" ,"007");
-            profile.WorkCentres.AddRange(new string[] { "A","B","C","D"});
+            for(int i = 0; i < 3; i++)
+            {
+                //Construct profile object
+                Profile profile = new Profile();
+                profile.Supplier.Add("name", "Emon");
+                profile.Supplier.Add("Code", "007");
+                profile.WorkCentres.AddRange(new string[] { "A", "B", "C", "D" });
 
-            //JSON stringify
-            string jsonObject = JsonConvert.SerializeObject(profile);
-            Debug.WriteLine(jsonObject);
+                if (i == 0)
+                {
+                    profile.Domain = "domainXXX";
+                }else if (i == 1)
+                {
+                    profile.Domain = "domainYYY";
+                }
+                else
+                {
+                    profile.Domain = "domainZZZ";
+                }
 
-            //save json string to a selected directory
-            new ProfileIO().SaveFile().Write(jsonObject);
+                profile.CreatedOn = DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss");
+                //JSON stringify
+                string jsonObject = JsonConvert.SerializeObject(profile);
+                Debug.WriteLine(jsonObject);
+
+                //save json string to a selected directory
+                new ProfileIO().Write(jsonObject);
+            }
+            
         }
     }
 }

@@ -1,8 +1,11 @@
 ﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,6 +15,12 @@ namespace SampleApp.utils
     {
         private string filePathForRead = null;
         private string filePathForWrite = null;
+        private string filePath = null;
+
+        public ProfileIO()
+        {
+            this.filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"profiles\\profile.json");
+        }
 
         public ProfileIO SaveFile()
         {
@@ -54,15 +63,48 @@ namespace SampleApp.utils
         }
 
         //read selected file
-        public string Read()
+        public List<dynamic> Read()
         {
-            return File.ReadAllText(filePathForRead);
+            JsonSerializer serializer = new JsonSerializer();
+            List<dynamic> objList = new List<dynamic>();
+
+            using (FileStream s = File.Open(filePath, FileMode.Open))
+            using (StreamReader sr = new StreamReader(s))
+            using (JsonReader reader = new JsonTextReader(sr))
+            {
+                //if target file containes multiple JSON objects without list format
+                reader.SupportMultipleContent = true;
+                
+                while (reader.Read())
+                {
+                    // deserialize only when there's "{" character in the stream
+                    if (reader.TokenType == JsonToken.StartObject)
+                    {
+                        objList.Add(serializer.Deserialize<dynamic>(reader));
+                    }
+                }
+            }
+            return objList;
         }
 
         //write json file into a selected directory
         public void Write(string content)
         {
-            File.WriteAllText(filePathForWrite, content);
+            File.AppendAllText(filePath, content);
         }
+
+        public bool IsProfileExist()
+        {
+            //string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"profiles\\profile.json");
+            //string filePathForRead = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"profiles\\profile.json");
+            //Debug.WriteLine($"json :{filePath}");
+            if (File.Exists(filePath))
+            {
+                return true;
+            }
+            return false;
+        }
+
+
     }
 }
